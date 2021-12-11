@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends,status  #status helps us to get the http status of different get, post type function
+from fastapi import FastAPI,Depends,status,Response,HTTPException  #status helps us to get the http status of different get, post type function
 # from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from . import schemas,models
@@ -32,8 +32,16 @@ def getblog( db : Session = Depends(get_db)):
 
 
 #getting blog with id
-@app.get('/blog/{id}')
-def showblog(id,db : Session = Depends(get_db)):
+@app.get('/blog/{id}',status_code= 200)
+def showblog(id, response : Response, db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     #blog = db.query(models.Blog).first()
+    #if we have an ID not available and we need to print the message we can do this my two methods
+    #1. using Response
+    '''if not blog:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"details" : f"There is not blog available of id:{id}"}'''
+    #2. Using HTTPException
+    if not blog:
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail=f"There is not blog available of id:{id}")
     return blog 
