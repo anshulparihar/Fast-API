@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI,Depends,status  #status helps us to get the http status of different get, post type function
 # from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from . import schemas,models
@@ -15,7 +15,7 @@ def get_db():
 
 
  #Creating new blog and storing it in the database
-@app.post('/blog')
+@app.post('/blog',status_code=status.HTTP_201_CREATED)
 def create(request : schemas.Blog, db : Session = Depends(get_db)):     #db is the database instance
    
     new_blog = models.Blog(title = request.title,body = request.body )     #request.title because of its connection between request and schemas.py
@@ -34,6 +34,6 @@ def getblog( db : Session = Depends(get_db)):
 #getting blog with id
 @app.get('/blog/{id}')
 def showblog(id,db : Session = Depends(get_db)):
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-    blog = db.query(models.Blog).first()
+    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    #blog = db.query(models.Blog).first()
     return blog 
