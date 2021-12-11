@@ -33,6 +33,7 @@ def getblog( db : Session = Depends(get_db)):
 
 #getting blog with id
 @app.get('/blog/{id}')
-def showblog(db : Session = Depends(get_db)):
+def showblog(id,db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
+    blog = db.query(models.Blog).first()
     return blog 
