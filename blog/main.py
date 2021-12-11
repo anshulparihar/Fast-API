@@ -45,3 +45,11 @@ def showblog(id, response : Response, db : Session = Depends(get_db)):
     if not blog:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail=f"There is not blog available of id:{id}")
     return blog 
+
+
+#deleting the blog
+@app.delete('/blog/{id}',status_code=status.HTTP_404_NOT_FOUND)
+def deleteblog(id,db : Session = Depends(get_db)):
+    db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session = False)
+    db.commit()
+    return {'Blog Deleted': f"Blog with id : {id} is been deleted"}
