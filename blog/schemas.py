@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,StrictStr,EmailStr
+
+from blog.database import Base
 
 
 class Blog(BaseModel):
@@ -7,5 +9,11 @@ class Blog(BaseModel):
 
 class User(BaseModel):
     name : str
-    email : str
+    email : EmailStr
     password : str
+
+class ShowUser(BaseModel):
+    name : str
+    email : EmailStr
+    class Config():
+        orm_mode = True

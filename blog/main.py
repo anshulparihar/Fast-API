@@ -76,11 +76,21 @@ def updateblog(id, request:schemas.Blog, db : Session = Depends(get_db)):
 #pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #Creating User
-@app.post('/user',status_code= status.HTTP_201_CREATED)
+@app.post('/user',response_model=schemas.ShowUser )
 def createUser(request: schemas.User,db : Session = Depends(get_db)):
     # hashedPassword = pwd_context.hash(request.password)
     new_user = models.User(name = request.name,email = request.email,password = Hash.bcrypt(request.password) )     #request.title because of its connection between request and schemas.py
     db.add(new_user)    #adding new user
     db.commit()         #commiting new user
     db.refresh(new_user)    #refreshing the database
-    return f'{request.name} Created'
+    #return (f'{request.name} Created')
+    return new_user
+
+@app.get('/user/{id}',response_model=schemas.ShowUser,status_code= status.HTTP_404_NOT_FOUND)
+def showUser(id:int, db : Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail=f"There is no user available of id:{id}")
+    return user 
+
+
