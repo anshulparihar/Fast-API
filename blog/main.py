@@ -18,7 +18,7 @@ def get_db():
 
 
  #Creating new blog and storing it in the database
-@app.post('/blog',status_code=status.HTTP_201_CREATED)
+@app.post('/blog',status_code=status.HTTP_201_CREATED,tags=["Blogs"])
 def create(request : schemas.Blog, db : Session = Depends(get_db)):     #db is the database instance
    
     new_blog = models.Blog(title = request.title,body = request.body )     #request.title because of its connection between request and schemas.py
@@ -28,14 +28,14 @@ def create(request : schemas.Blog, db : Session = Depends(get_db)):     #db is t
     return new_blog
 
 #getting all the blogs from the database
-@app.get('/blog')
+@app.get('/blog',tags=["Blogs"])
 def getblog( db : Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 
 #getting blog with id
-@app.get('/blog/{id}',status_code= 200)
+@app.get('/blog/{id}',status_code= 200,tags=["Blogs"])
 def showblog(id, response : Response, db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     #blog = db.query(models.Blog).first()
@@ -51,7 +51,7 @@ def showblog(id, response : Response, db : Session = Depends(get_db)):
 
 
 #deleting the blog
-@app.delete('/blog/{id}',status_code=status.HTTP_404_NOT_FOUND)
+@app.delete('/blog/{id}',status_code=status.HTTP_404_NOT_FOUND,tags=["Blogs"])
 def deleteblog(id,db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -62,7 +62,7 @@ def deleteblog(id,db : Session = Depends(get_db)):
 
 
 #updating the blog
-@app.put('/blog/{id}',status_code=status.HTTP_202_ACCEPTED)
+@app.put('/blog/{id}',status_code=status.HTTP_202_ACCEPTED,tags=["Blogs"])
 def updateblog(id, request:schemas.Blog, db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     request = dict(request)
@@ -76,7 +76,7 @@ def updateblog(id, request:schemas.Blog, db : Session = Depends(get_db)):
 #pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #Creating User
-@app.post('/user',response_model=schemas.ShowUser )
+@app.post('/user',response_model=schemas.ShowUser,tags=["User"] )
 def createUser(request: schemas.User,db : Session = Depends(get_db)):
     # hashedPassword = pwd_context.hash(request.password)
     new_user = models.User(name = request.name,email = request.email,password = Hash.bcrypt(request.password) )     #request.title because of its connection between request and schemas.py
@@ -86,7 +86,7 @@ def createUser(request: schemas.User,db : Session = Depends(get_db)):
     #return (f'{request.name} Created')
     return new_user
 
-@app.get('/user/{id}',response_model=schemas.ShowUser,status_code= status.HTTP_404_NOT_FOUND)
+@app.get('/user/{id}',response_model=schemas.ShowUser,status_code= status.HTTP_404_NOT_FOUND,tags=["User"])
 def showUser(id:int, db : Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
