@@ -1,7 +1,6 @@
-from sys import prefix
-from fastapi import APIRouter,Depends,status,HTTPException#status helps us to get the http status of different get, post type function
+from fastapi import APIRouter,Depends,status
 from sqlalchemy.orm import Session
-from .. import schemas,models,database
+from .. import schemas,database
 from typing import List
 from ..repository import blog
 get_db = database.get_db

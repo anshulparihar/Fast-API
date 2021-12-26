@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from .. import models,schemas
-from typing import List
-from fastapi import HTTPException,status
+from fastapi import HTTPException,status #status helps us to get the http status of different get, post type function
 
 def getBlog(db:Session):
     blogs = db.query(models.Blog).all()
