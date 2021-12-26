@@ -1,3 +1,4 @@
+from sys import prefix
 from fastapi import APIRouter,Depends,status,HTTPException#status helps us to get the http status of different get, post type function
 from sqlalchemy.orm import Session
 from .. import schemas,models,database
@@ -5,10 +6,10 @@ from typing import List
 
 get_db = database.get_db
 
-router = APIRouter()
+router = APIRouter(prefix="/blog",tags=['Blogs'])
 
 #getting all the blogs from the database
-@router.get('/blog',response_model=List[schemas.ShowBlog],tags=["Blogs"])
+@router.get('/',response_model=List[schemas.ShowBlog],tags=["Blogs"])
 def getblog( db : Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
@@ -16,7 +17,7 @@ def getblog( db : Session = Depends(get_db)):
 
  #Creating new blog and storing it in the database
 
-@router.post('/blog',status_code=status.HTTP_201_CREATED,tags=["Blogs"])
+@router.post('/',status_code=status.HTTP_201_CREATED,tags=["Blogs"])
 def create(request : schemas.Blog, db : Session = Depends(get_db)):     #db is the database instance
    
     new_blog = models.Blog(title = request.title,body = request.body,user_id =1 )     #request.title because of its connection between request and schemas.py
@@ -26,13 +27,13 @@ def create(request : schemas.Blog, db : Session = Depends(get_db)):     #db is t
     return new_blog
 
 
-@router.get('/blog',response_model=List[schemas.ShowBlog],tags=["Blogs"])
+@router.get('/',response_model=List[schemas.ShowBlog],tags=["Blogs"])
 def getblog( db : Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 #getting blog with id
-@router.get('/blog/{id}',response_model=schemas.ShowBlog, status_code= 200,tags=["Blogs"])
+@router.get('/{id}',response_model=schemas.ShowBlog, status_code= 200,tags=["Blogs"])
 def showblog(id,db : Session = Depends(get_db)):
     print(List[schemas.ShowBlog])
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
@@ -41,7 +42,7 @@ def showblog(id,db : Session = Depends(get_db)):
     return blog 
 
 #deleting the blog
-@router.delete('/blog/{id}',status_code=status.HTTP_404_NOT_FOUND,tags=["Blogs"])
+@router.delete('/{id}',status_code=status.HTTP_404_NOT_FOUND,tags=["Blogs"])
 def deleteblog(id,db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -52,7 +53,7 @@ def deleteblog(id,db : Session = Depends(get_db)):
 
 
 #updating the blog
-@router.put('/blog/{id}',status_code=status.HTTP_202_ACCEPTED,tags=["Blogs"])
+@router.put('/{id}',status_code=status.HTTP_202_ACCEPTED,tags=["Blogs"])
 def updateblog(id, request:schemas.Blog, db : Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     request = dict(request)
