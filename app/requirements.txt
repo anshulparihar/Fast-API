@@ -26,7 +26,6 @@ parso==0.8.3
 passlib==1.7.4
 pickleshare==0.7.5
 prompt-toolkit==3.0.23
-psycopg2==2.9.2
 pyasn1==0.4.8
 pycparser==2.21
 pydantic==1.8.2
